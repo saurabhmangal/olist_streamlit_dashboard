@@ -1,0 +1,17 @@
+{
+"price":"Price",
+"freight_value": "Freight Charges",
+"review_score": "Review Score",
+"product_weight_g": "Product Weight (gm)",
+"customer_lat": "Customer Latitute",
+"customer_lng": "Customer Longitute",
+"Types of products": "Product Category",
+"payment_value": "Payment Value",
+"seller_lat": "Seller Latitude",
+"seller_lng": "Seller Logitude",
+"volume": "Product size",
+"year": "Year",
+"delivery_days": "Delivery Days",
+"estimated_days": "Estimated Delivery Days",
+"distance":"Distance"
+}
