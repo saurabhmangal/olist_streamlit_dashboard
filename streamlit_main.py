@@ -6,7 +6,7 @@ import eda
 import machine_learning
 import streamlit as st
 import pandas as pd
-import neural_net
+#import neural_net
 
 st.set_page_config(page_title=None, page_icon=None, layout='wide', initial_sidebar_state='expanded')
 # Code for grey sidebar
@@ -48,5 +48,5 @@ elif options == 'Conclusion and Recommendation':
     conclusion.rec()
 elif options == 'Machine Learning':
     machine_learning.ml_tab(dataframe)
-elif options == 'neural_net':
-    neural_net.neural_net(dataframe)
+#elif options == 'neural_net':
+#    neural_net.neural_net(dataframe)
