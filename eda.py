@@ -24,7 +24,7 @@ def uni_plot(series, variable_type, plot_type):
     if plot_type == "Violin Plot":
         fig = violin(series, variable_type,col_names)
     
-    fig.update_layout(width=500, height=275,margin=dict(l=1, r=1, b=1, t=1))
+    fig.update_layout(width=450, height=275,margin=dict(l=1, r=1, b=1, t=1))
     return (fig)
 
 def streamlit_uni_analysis(series, variable_type, plot_type):
@@ -45,7 +45,7 @@ def streamlit_uni_analysis(series, variable_type, plot_type):
     describe.reset_index(inplace=True)
     
     sub_col2.write("")
-    sub_col2.write(home.plotly_table (describe,list(describe),width = 500, height = 300))
+    sub_col2.write(home.plotly_table (describe,list(describe),width = 450, height = 300))
 
     
     if (series.infer_objects().dtypes != "object"):
@@ -128,7 +128,7 @@ def bivariate_tab(dataframe,variable1,variable2):
         
         sub_col1.write(scatter_plot(df,variable1,variable2))
         n_bins = st.sidebar.slider('Bins', min_value = 1, max_value=5, step=1,value=3)
-        sub_col2.write(multiple_box_plot(df,variable1,variable2,n_bins,width=500, height=400))
+        sub_col2.write(multiple_box_plot(df,variable1,variable2,n_bins,width=450, height=400))
         st.info("The correlation of "+col_names[variable1]+" against "+col_names[variable2]+" is: "+str(bivariate_cor(df,variable1,variable2)))
 
     #print(bin_dataframe(dataframe,variable2,5))

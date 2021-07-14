@@ -6,7 +6,6 @@ import eda
 import machine_learning
 import streamlit as st
 import pandas as pd
-#import neural_net
 
 st.set_page_config(page_title=None, page_icon=None, layout='wide', initial_sidebar_state='expanded')
 # Code for grey sidebar
@@ -34,7 +33,7 @@ options = st.sidebar.radio('Select a page:',
      'Geospatial Plots & Analysis',
      #'Machine Learning',
      'Machine Learning',
-     'Conclusion and Recommendation','neural_net'])
+     'Conclusion and Recommendation'])
 
 if options == 'Home':
     home.home(dataframe)
@@ -48,5 +47,3 @@ elif options == 'Conclusion and Recommendation':
     conclusion.rec()
 elif options == 'Machine Learning':
     machine_learning.ml_tab(dataframe)
-#elif options == 'neural_net':
-#    neural_net.neural_net(dataframe)

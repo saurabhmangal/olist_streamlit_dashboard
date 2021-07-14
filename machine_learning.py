@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from math import sin, cos, sqrt, atan2, radians
 from sklearn import metrics
 import seaborn as sb
-from sklearn.preprocessing import PolynomialFeatures
+from sklearn.preprocessing import PolynomialFeatures, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 
@@ -27,6 +27,13 @@ import itertools
 import time
 from utils import *
 import pickle
+from tensorflow.keras import models
+from tensorflow.keras import layers
+from tensorflow.keras.utils import to_categorical
+import tensorflow as tf
+from sklearn.model_selection import RepeatedKFold
+
+
 
 def calculate_distance(dataframe):
     temp = pd.DataFrame()
@@ -155,12 +162,90 @@ def randomforest_classification(X_train, X_test, y_train, y_test):
     return (y_train_pred, y_test_pred)
 
 def deep_learning_model(X_train, X_test, y_train, y_test):
-    log_reg = RandomForestClassifier(random_state=0)#,solver = 'newton-cg',max_iter=500)
-    log_reg.fit(X_train, y_train)
-    y_train_pred = log_reg.predict(X_train)
-    y_test_pred = log_reg.predict(X_test)
+    '''
+    def objective(trial):
+
+        node_layer1 = trial.suggest_int("node_layer1", 2, 15)
+        node_layer2 = trial.suggest_int("node_layer2", 2, 15)
+ 
+              
+        rkf = RepeatedKFold(n_splits=5, n_repeats=1, random_state=2652124)
+        count=1
+        val_accuracy = []
+        for train_index, test_index in rkf.split(X_train):
+            X_train_val, X_test_val = X_train.iloc[train_index.tolist()], X_train.iloc[test_index.tolist()]
+            y_train_val, y_test_val = y_train.iloc[train_index.tolist()], y_train.iloc[test_index.tolist()]
+        
+            network = models.Sequential()
+            network.add(layers.Dense(node_layer1, activation='relu', input_shape=(len(list(X_train_val)),)))
+            network.add(layers.Dense(node_layer2, activation='relu'))
+            network.add(layers.Dense(len(y_train_val[list(y_train_val)[0]].unique()), activation='softmax'))
+          
+            network.compile(optimizer='rmsprop',
+                            loss='categorical_crossentropy',
+                            metrics=['accuracy'])
+                        
+            le = LabelEncoder()
+            label_model = le.fit(y_train_val)
+            
+            y_train_val = le.transform(y_train_val.copy())          
+            y_train_val = to_categorical(y_train_val.copy())
+            
+            # Fit the neural network
+            network.fit(X_train_val, y_train_val, epochs=15, batch_size= 40)# batch_size_trial)#40)
+
+            train_loss, train_acc = network.evaluate(X_train_val, y_train_val)
+            #test_loss, test_acc = network.evaluate(X_test_val, y_test_val)
+            #st.write(str(count)+': Test Accuracy: '+str(test_acc)+ '\nTest Loss: '+str(test_loss))
+            val_accuracy.append(train_acc)
+            count+=1
+        
+        return np.sqrt(np.mean(val_accuracy) ** 2 + np.std(val_accuracy) ** 2)
+
+        #return np.mean(val_accuracy), np.var(val_accuracy)
+        
+    study = optuna.create_study(direction="maximize")
+    study.optimize(objective, n_trials=20, n_jobs=-1)#, timeout=300)
+
+    st.write(study.best_params['node_layer1'],study.best_params['node_layer2'])
+    #st.write(type(study.best_params['node_layer1']))
+    '''
+    network_best = models.Sequential()
+    network_best.add(layers.Dense(3, activation='relu', input_shape=(len(list(X_train)),)))
+    network_best.add(layers.Dense(12, activation='relu'))    
+    #network_best.add(layers.Dense(study.best_params['node_layer1'], activation='relu', input_shape=(len(list(X_train)),)))
+    #network_best.add(layers.Dense(study.best_params['node_layer2'], activation='relu'))
+    network_best.add(layers.Dense(len(y_train[list(y_train)[0]].unique()), activation='softmax'))
+  
+    network_best.compile(optimizer='rmsprop',loss='categorical_crossentropy', metrics=['accuracy'])
+
+    le = LabelEncoder()
+    label_model = le.fit(y_train)
+            
+    y_train = le.transform(y_train.copy())  
+    y_test  = le.transform(y_test.copy())    
+        
+    y_train = to_categorical(y_train.copy())
+    y_test = to_categorical(y_test.copy())
+
+    network_best.fit(X_train, y_train, epochs=100, batch_size= 40)
     
-    return (y_train_pred, y_test_pred)
+    y_train_pred = network_best.predict(X_train)
+    y_test_pred = network_best.predict(X_test)
+
+    ##st.write("y_train_pred",y_train_pred)
+
+    ##y_classes = [np.argmax(y, axis=None, out=None) for y in y_train_pred]
+    ##st.write("y_classes",y_classes)
+    
+    y_train_classes = tf.argmax(y_train_pred,axis=1)
+    y_test_classes  = tf.argmax(y_test_pred,axis=1)
+    
+    y_classes_train_pred = le.inverse_transform(y_train_classes)
+    y_classes_test_pred  = le.inverse_transform(y_test_classes)
+    
+    return (y_classes_train_pred, y_classes_test_pred)
+    
     
 def result_ml_model(X_train, X_test, y_train, y_test,labels,model_name):    
     st.subheader(model_name)
@@ -176,6 +261,7 @@ def result_ml_model(X_train, X_test, y_train, y_test,labels,model_name):
             
         if (model_name == "Deep Learning"):
             y_train_pred, y_test_pred = deep_learning_model(X_train, X_test, y_train, y_test)
+            #y_train_pred, y_test_pred = deep_learning_model(X_train, X_test, y_train, y_test)
     
     
     progress_bar.progress(50)
@@ -297,10 +383,10 @@ def ml_tab(dataframe):
     if "Logistic Regression" in select_model:
         result_ml_model(X_train, X_test, y_train, y_test,labels,"Logistic Regression")
         
-    if "Logistic Regression" in select_model:
+    if "Random Forest Classifier" in select_model:
         result_ml_model(X_train, X_test, y_train, y_test,labels,"Random Forest Classifier")
 
-    if "Logistic Regression" in select_model:
+    if "Deep Learning" in select_model:
         result_ml_model(X_train, X_test, y_train, y_test,labels,"Deep Learning")        
 
     st.balloons()
