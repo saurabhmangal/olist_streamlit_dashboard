@@ -88,7 +88,7 @@ def hexmap_plot(dataframe, x_min, x_max, y_min, y_max, df):
             leg_label='Sale',
             )
     
-    #show(plot)
+    show(plot)
             
 # create a bubble map.
 def bubble_map(plot, df, radius_col, lon, lat, scale, color='orange', leg_label='Bubble Map'):
@@ -110,7 +110,7 @@ def bubble_map(plot, df, radius_col, lon, lat, scale, color='orange', leg_label=
     # The legend.click_policy method allows us to toggle layer on/off by clicking the corresponding field in the legend. We'll explore this more later!
     plot.legend.location = "top_right"
     plot.legend.click_policy = "hide"
-    #show(plot)
+    show(plot)
 
 def bubblemap_plot(dataframe, x_min, x_max, y_min, y_max, df):
     # Defining the map tiles to use. I use OSM, but you can also use ESRI images or google street maps.
@@ -198,6 +198,7 @@ def geo_tab(dataframe):
             "lgihter colour indicates a higher number of sales, showing how this specific area within the city attracts "
             "most customers.")
         st.write("- Lighter colour points show us that most potential and target customers live in that area.")
+
 
     if map_type == 'Map - Time for Delivery':
         st.write("### Map - Time for Delivery ")

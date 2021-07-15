@@ -98,13 +98,13 @@ def remove_outlier_bivariate(dataframe, variable1, variable2):
         variable_list = [variable1]
     for i in variable_list:
         dataframe[i] = remove_outlier_IQR(dataframe[i])
-        dataframe.dropna(inplace=True)
+        dataframe = dataframe.dropna().copy()
     return (dataframe)
     
 def remove_outlier_dataframe(dataframe, col_list):
     for i in col_list:
         dataframe[i] = remove_outlier_IQR(dataframe[i])
-        dataframe.dropna(inplace=True)
+        dataframe = dataframe.dropna().copy()
     return (dataframe)
     
     
@@ -148,10 +148,10 @@ def scatter_plot(dataframe, variable1,variable2):
 def bin_dataframe(df,variable,n_bins):
     dataframe = df.copy()
     dataframe["new_col"] = pd.cut(dataframe[variable],bins = n_bins)
-    dataframe.drop(columns=[variable],inplace=True)
+    dataframe = dataframe.drop(columns=[variable]).copy()
     #print (dataframe)
     dataframe[variable] = dataframe["new_col"].astype("str")
-    dataframe.drop(columns=["new_col"],inplace=True)
+    dataframe = dataframe.drop(columns=["new_col"]).copy()
     #print (dataframe)
     #print (dataframe.infer_objects().dtypes)
     return(dataframe)
